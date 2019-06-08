@@ -1,0 +1,75 @@
+Q.1) Find no. of complaints which got timely response.
+
+	A = LOAD '/consumer_complaints.csv' USING PigStorage(',');
+
+			\\{schema is not defined because i've already uploaded the data in an directory(HDFS)}\\
+
+			\\{you can also define schema: (dr:chararray,prod:chararray,sub_prod:chararray,
+			issue:chararray,sub_issue:chararray,consumer_comps_nar:chararray,comp_pub_resp:chararray,
+			comp:chararray,state:chararray,zipcode:chararray,tags:chararray,date_sent:chararray,comp_resp:chararray,
+			time_resp:chararray,con_display:chararray,comp_id:chararray)\\
+
+	B = FOREACH A generate $15 as id , $13 as timely;
+
+	C = FILTER B by timely == "yes";
+
+	D = FOREACH C generate id,timely;
+
+	E = GROUP D by timely;
+
+	F = FOREACH E generate GROUP, count(D.id) as num of complaints;
+	
+	dump F;
+
+Q.2) Find no. of complaints where consumer forum forwarded the complaint same day they recieved to resp. company.
+
+	A = LOAD '/path/consumer_complaints.csv' USING PigStorage(',') as (f1:chararray,f2:chararray,f3:chararray,f4:chararray,f5:chararray,f6:chararray,
+		f7:chararray,f8:chararray,f9:chararray,f10:chararray,f11:chararray,f12:chararray,f13:chararray,f14:chararr1ay,f15:chararray,f16:chararray);
+
+	B = FOREACH A generate f1 as compdate, f12 as forwdate, f16 as id;
+
+	C = FILTER B by is != 'complaint id';
+
+	D = FOREACH C generate compdate, forwdate, id;
+
+	E = FILTER D by compdate == forwdate;
+
+	F = FOREACH E generate compdate as complaint_date, forwdate as forward_date, id);
+
+	G = GROUP F by (complaint_date,forward_date);
+
+	H = FOREACH G generate FLATTEN(group) as (complaint_date,forward_date), COUNT(F.id) as no of complaints;
+	
+	dump H;
+
+Q.3) Find list of companies toping in complaint chart (companies with max. no. of complaints).
+
+	A = LOAD -----------------------------------------------------------------------------------------(same as Q.1)
+
+	B = FOREACH A generate $7 as company, $15 as id;
+
+	C = GROUP B by company;
+
+	D = FOREACH C generate Replace(GROUP,',',' ');
+
+	E = ORDER D by numofcomplaints DESC;
+
+	F = LIMIT E 100;
+
+	dump F;
+
+	illustrate F;
+
+Q.4) Find no. of complaints filed with product type has 'Debt Collection' for year 2015.
+
+	A = LOAD ----------------------------------------------------------------- as (f1:chararray,f2:chararray);
+
+	B = FILTER A by f2 == 'Debt Collection' and GetYear(ToDate(f1,'MM/DD/YYYY')) == 2015;
+
+	C = FOREACH B generate f1 as complaintdate, f2 as product;
+
+	D = GROUP C by (complaintdate,product);
+
+	E = FOREACH D generate FLATTEN(group) as (complaintdate,product), COUNT(C.product) as no of complaints;
+
+	dump E;
