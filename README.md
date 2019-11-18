@@ -9,5 +9,11 @@ One question people always have is: What is the best financial institution, or a
 ## Dataset
 The consumer complaints database provided by the Bureau of Consumer Financial Protection, can be downloaded as a 190mb csv file. 
 Data source : https://catalog.data.gov/dataset/consumer-complaint-database
+
 What's inside is more than just rows and columns. Make it easy for others to get started by describing how you acquired the data and what time period it represents, too.
 
+## Analysis
+* Find no. of complaints which got timely response.
+* Find no. of complaints where consumer forum forwarded the complaint same day they recieved to resp. company.
+* Find list of companies toping in complaint chart (companies with max. no. of complaints).
+* Find no. of complaints filed with product type has 'Debt Collection' for year 2015.
